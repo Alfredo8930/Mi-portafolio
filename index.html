@@ -265,22 +265,22 @@
           </div>
         </div>
         <div class="contact-form">
-          <form action="#" method="POST">
+          <form action="#" method="POST" id="contactForm">
             <div class="form-group">
               <label for="name">Nombre</label>
-              <input type="text" id="name" name="name" class="form-control" required>
+              <input type="text" id="nombre" name="nombre" class="form-control" placeholder="Tu Nombre" required>
             </div>
             <div class="form-group">
               <label for="email">Email</label>
-              <input type="email" id="email" name="email" class="form-control" required>
+              <input type="email" id="email" name="email" class="form-control" placeholder="Tu Correo" required>
             </div>
             <div class="form-group">
               <label for="subject">Asunto</label>
-              <input type="text" id="subject" name="subject" class="form-control" required>
+              <input type="text" id="asunto" name="asunto" class="form-control" placeholder="Tu asunto" required>
             </div>
             <div class="form-group">
               <label for="message">Mensaje</label>
-              <textarea id="message" name="message" class="form-control" required></textarea>
+              <textarea id="mesaje" name="mensaje" class="form-control" placeholder="Tu mensaje" required></textarea>
             </div>
             <button type="submit" class="submit-btn">Enviar Mensaje</button>
           </form>
@@ -314,6 +314,52 @@
       </div>
     </div>
   </footer>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+  <script>
+  // Tu configuración personalizada de Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyD_Eyl14E0HguUmA-zOZK3g87trf78kBHA",
+    authDomain: "portafoliojose-2468c.firebaseapp.com",
+    projectId: "portafoliojose-2468c",
+    storageBucket: "portafoliojose-2468c.firebasestorage.app",
+    messagingSenderId: "1076893420143",
+    appId: "1:1076893420143:web:d1d1e772c8fb5e6b475b9a"
+  };
+
+    // Inicializar Firebase
+    firebase.initializeApp(firebaseConfig);
+  </script>
+
+
+  <script>
+    const database = firebase.database();
+
+    document.getElementById("contactForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const nombre = document.getElementById("nombre").value;
+      const email = document.getElementById("email").value;
+      const mensaje = document.getElementById("mensaje").value;
+
+      const nuevoMensaje = database.ref("mensajes").push();
+      nuevoMensaje.set({
+        nombre: nombre,
+        email: email,
+        mensaje: mensaje,
+        fecha: new Date().toLocaleString()
+      }).then(() => {
+        alert("Mensaje enviado correctamente.");
+        document.getElementById("contactForm").reset();
+      }).catch((error) => {
+        alert("Error al enviar: " + error.message);
+      });
+    });
+  </script>
+
 
   <!-- JavaScript para el menú móvil -->
   <script>
