@@ -280,7 +280,7 @@
             </div>
             <div class="form-group">
               <label for="message">Mensaje</label>
-              <textarea id="mesaje" name="mensaje" class="form-control" placeholder="Tu mensaje" required></textarea>
+              <textarea id="mensaje" name="mensaje" class="form-control" placeholder="Tu mensaje" required></textarea>
             </div>
             <button type="submit" class="submit-btn">Enviar Mensaje</button>
           </form>
@@ -315,51 +315,57 @@
     </div>
   </footer>
 
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <!-- Firebase SDK v9 (modular) -->
+  <script type="module">
+    // Importa las funciones necesarias de Firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+    import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
 
-  <script>
-  // Tu configuración personalizada de Firebase
-  const firebaseConfig = {
-    apiKey: "AIzaSyD_Eyl14E0HguUmA-zOZK3g87trf78kBHA",
-    authDomain: "portafoliojose-2468c.firebaseapp.com",
-    projectId: "portafoliojose-2468c",
-    storageBucket: "portafoliojose-2468c.firebasestorage.app",
-    messagingSenderId: "1076893420143",
-    appId: "1:1076893420143:web:d1d1e772c8fb5e6b475b9a"
-  };
+    // Tu configuración de Firebase
+    const firebaseConfig = {
+      apiKey: "AIzaSyD_Eyl14E0HguUmA-zOZK3g87trf78kBHA",
+      authDomain: "portafoliojose-2468c.firebaseapp.com",
+      projectId: "portafoliojose-2468c",
+      storageBucket: "portafoliojose-2468c.firebasestorage.app",
+      messagingSenderId: "1076893420143",
+      appId: "1:1076893420143:web:d1d1e772c8fb5e6b475b9a"
+    };
 
-    // Inicializar Firebase
-    firebase.initializeApp(firebaseConfig);
-  </script>
+    // Inicializa Firebase
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
 
-
-  <script>
-    const database = firebase.database();
-
-    document.getElementById("contactForm").addEventListener("submit", function (e) {
+    document.getElementById("contactForm").addEventListener("submit", function(e) {
       e.preventDefault();
 
       const nombre = document.getElementById("nombre").value;
       const email = document.getElementById("email").value;
+      const asunto = document.getElementById("asunto").value;
       const mensaje = document.getElementById("mensaje").value;
 
-      const nuevoMensaje = database.ref("mensajes").push();
-      nuevoMensaje.set({
-        nombre: nombre,
-        email: email,
-        mensaje: mensaje,
-        fecha: new Date().toLocaleString()
-      }).then(() => {
-        alert("Mensaje enviado correctamente.");
-        document.getElementById("contactForm").reset();
-      }).catch((error) => {
-        alert("Error al enviar: " + error.message);
-      });
+      try {
+        const mensajesRef = ref(database, 'mensajes');
+        const nuevoMensajeRef = push(mensajesRef);
+        
+        set(nuevoMensajeRef, {
+          nombre: nombre,
+          email: email,
+          asunto: asunto,
+          mensaje: mensaje,
+          fecha: new Date().toLocaleString()
+        }).then(() => {
+          alert("Mensaje enviado correctamente.");
+          document.getElementById("contactForm").reset();
+        }).catch((error) => {
+          console.error("Error al enviar:", error);
+          alert("Error al enviar el mensaje. Por favor intenta nuevamente.");
+        });
+      } catch (error) {
+        console.error("Error general:", error);
+        alert("Ocurrió un error inesperado.");
+      }
     });
   </script>
-
 
   <!-- JavaScript para el menú móvil -->
   <script>
